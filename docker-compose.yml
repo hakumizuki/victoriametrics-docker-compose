@@ -12,19 +12,19 @@ services:
       - ./scrape_config.yml:/etc/prometheus/scrape_config.yml
     command:
       - "--promscrape.config=/etc/prometheus/scrape_config.yml"
-      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+      - "--remoteWrite.url=http://victoriametrics:9999/api/v1/write"
     restart: always
 
   victoriametrics:
     container_name: victoriametrics
     image: victoriametrics/victoria-metrics
     ports:
-      - 8428:8428
+      - 9999:9999
     volumes:
       - vmdata:/storage
     command:
       - "--storageDataPath=/storage"
-      - "--httpListenAddr=:8428"
+      - "--httpListenAddr=:9999"
     restart: always
 
 volumes:
