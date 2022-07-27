@@ -1,0 +1,32 @@
+version: "3"
+services:
+  vmagent:
+    container_name: vmagent
+    image: victoriametrics/vmagent
+    depends_on:
+      - "victoriametrics"
+    ports:
+      - 8429:8429
+    volumes:
+      - vmagentdata:/vmagentdata
+      - ./scrape_config.yml:/etc/prometheus/scrape_config.yml
+    command:
+      - "--promscrape.config=/etc/prometheus/scrape_config.yml"
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+    restart: always
+
+  victoriametrics:
+    container_name: victoriametrics
+    image: victoriametrics/victoria-metrics
+    ports:
+      - 8428:8428
+    volumes:
+      - vmdata:/storage
+    command:
+      - "--storageDataPath=/storage"
+      - "--httpListenAddr=:8428"
+    restart: always
+
+volumes:
+  vmagentdata: {}
+  vmdata: {}
